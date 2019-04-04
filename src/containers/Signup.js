@@ -58,9 +58,16 @@ export default class Signup extends Component {
       });
     } catch (e) {
         if (e.name === "UsernameExistsException") {
-           const newConfirmKey = await Auth.resendSignUp(this.state.email);
+            // try {
+                // const newConfirmKey = await Auth.resendSignUp(this.state.email);
+                this.setState({newUser: {}});
+                alert(`${e.message} A new confirmation code was sent to your mail, please check your email`)
+            // } catch (error) {
+            //     console.log(error);
+            // }
+        } else {
+            alert(e.message);
         }
-     alert(e.message);
     }
   
     this.setState({ isLoading: false });
