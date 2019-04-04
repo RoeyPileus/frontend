@@ -34,10 +34,20 @@ export default class Login extends Component {
       this.props.userHasAuthenticated(true);
       this.props.history.push("/");
     } catch (e) {
-      alert(e.message);
-      this.setState({ isLoading: false });
+      if (e.name === 'UserNotFoundException') {
+        await Auth.signIn(this.state.email.toLowerCase(), this.state.password);
+        this.props.userHasAuthenticated(true);
+        this.props.history.push("/");
+      } else {
+        alert(e.message);
+        this.setState({ isLoading: false });
+      }
     }
   }  
+
+  authSignIn(){
+    
+  }
 
   render() {
     return (

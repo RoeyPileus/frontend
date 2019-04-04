@@ -39,18 +39,17 @@ export default class Signup extends Component {
 
   handleChange = event => {
     this.setState({
-      [event.target.id]: event.target.value
-    });
+        [event.target.id]: event.target.value
+      });
   }
 
   handleSubmit = async event => {
     event.preventDefault();
-  
     this.setState({ isLoading: true });
-  
+    
     try {
       const newUser = await Auth.signUp({
-        username: this.state.email,
+        username: this.state.email.toLowerCase(),
         password: this.state.password
       });
       this.setState({
@@ -58,13 +57,13 @@ export default class Signup extends Component {
       });
     } catch (e) {
         if (e.name === "UsernameExistsException") {
-            // try {
-                // const newConfirmKey = await Auth.resendSignUp(this.state.email);
+            try {
+                const newConfirmKey = await Auth.resendSignUp(this.state.email);
                 this.setState({newUser: {}});
                 alert(`${e.message} A new confirmation code was sent to your mail, please check your email`)
-            // } catch (error) {
-            //     console.log(error);
-            // }
+            } catch (error) {
+                console.log(error);
+            }
         } else {
             alert(e.message);
         }
@@ -79,8 +78,8 @@ export default class Signup extends Component {
     this.setState({ isLoading: true });
   
     try {
-      await Auth.confirmSignUp(this.state.email, this.state.confirmationCode);
-      await Auth.signIn(this.state.email, this.state.password);
+      await Auth.confirmSignUp(this.state.email.toLowerCase(), this.state.confirmationCode);
+      await Auth.signIn(this.state.email.toLowerCase(), this.state.password);
   
       this.props.userHasAuthenticated(true);
       this.props.history.push("/");
